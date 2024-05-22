@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Customer Form</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff; /* white background */
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        width: 100%;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: white;
+    }
+    label {
+        display: block;
+        width: 30%;
+        margin-right: 2%;
+        text-align: right;
+        font-weight: bold; /* Make label text bold */
+    }
+    input[type="text"], input[type="email"], input[type="tel"], select {
+        width: calc(65% - 10px); /* Adjust width as needed */
+        padding: 10px;
+        margin: 5px 0;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .button-container {
+        margin-top: 10px;
+        text-align: left; /* Align button to the left */
+    }
+    .button-container button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .button-container button:hover {
+        background-color: #0056b3;
+    }
+    .input-container {
+        display: flex;
+        align-items: center;
+    }
+    .error-message {
+        color: red;
+        margin-top: 5px;
+    }
+    .customer-table {
+        margin-top: 20px;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    .customer-table th, .customer-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    .customer-table th {
+        background-color: #f2f2f2;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <form id="customerForm" onsubmit="return validateForm()">
+        <div class="input-container">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter Name">
+            <div id="nameError" class="error-message"></div>
+        </div>
+
+        <div class="input-container">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter Email">
+            <div id="emailError" class="error-message"></div>
+        </div>
+
+        <div class="input-container">
+            <label for="contact">Contact No:</label>
+            <input type="tel" id="contact" name="contact" placeholder="Enter Contact No">
+            <div id="contactError" class="error-message"></div>
+        </div>
+
+        <div class="input-container">
+            <label for="account">Account Type:</label>
+            <select id="account" name="account">
+                <option value="" disabled selected>Select Account Type</option>
+                <option value="personal">Personal</option>
+                <option value="business">Business</option>
+                <option value="other">Other</option>
+            </select>
+            <div id="accountError" class="error-message"></div>
+        </div>
+
+        <div class="button-container">
+            <button type="submit">Add Customer</button>
+        </div>
+    </form>
+
+    <div id="customerDetails" style="display: none;">
+        <h2>Customer Details</h2>
+        <table class="customer-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Contact No</th>
+                    <th>Account Type</th>
+                </tr>
+            </thead>
+            <tbody id="customerTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    var customers = [];
+
+    function validateForm() {
+        var name = document.getElementById('name').value.trim();
+        var email = document.getElementById('email').value.trim();
+        var contact = document.getElementById('contact').value.trim();
+        var account = document.getElementById('account').value;
+
+        var isValid = true;
+
+        // Name validation
+        if (!name.match(/^[a-zA-Z\s]+$/)) {
+            document.getElementById('nameError').innerText = 'Please enter only alphabets';
+            isValid = false;
+        } else {
+            document.getElementById('nameError').innerText = '';
+        }
+
+        // Email validation
+        if (!email.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
+            document.getElementById('emailError').innerText = 'Please enter a valid email address';
+            isValid = false;
+        } else {
+            document.getElementById('emailError').innerText = '';
+        }
+
+        // Contact validation
+        if (!contact.match(/^[7-9]\d{9}$/)) {
+            document.getElementById('contactError').innerText = 'Please enter a valid 10-digit contact number starting with 7, 8, or 9';
+            isValid = false;
+        } else {
+            document.getElementById('contactError').innerText = '';
+        }
+
+        // Account validation
+        if (account === '') {
+            document.getElementById('accountError').innerText = 'Please select an account type';
+            isValid = false;
+        } else {
+            document.getElementById('accountError').innerText = '';
+        }
+
+        if (isValid) {
+            displayCustomer(name, email, contact, account);
+        }
+
+        return false; // Prevent form submission
+    }
+
+    function displayCustomer(name, email, contact, account) {
+        var customer = {
+            name: name,
+            email: email,
+            contact: contact,
+            account: account
+        };
+        
+        customers.push(customer);
+
+        var tableBody = document.getElementById('customerTableBody');
+        var newRow = tableBody.insertRow();
+
+        var nameCell = newRow.insertCell(0);
+        var emailCell = newRow.insertCell(1);
+        var contactCell = newRow.insertCell(2);
+        var accountCell = newRow.insertCell(3);
+
+        nameCell.innerText = name;
+        emailCell.innerText = email;
+        contactCell.innerText = contact;
+        accountCell.innerText = account;
+
+        document.getElementById('customerDetails').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
